@@ -16,8 +16,9 @@
         <div class="d-flex flex-row" style="width: 100%; height: 10vh; background: rgb(32, 37, 64); font-family: 'DM Sans', sans-serif;padding: 10px;">
             <div class="d-flex flex-column justify-space-between">
                 <div style="color: white; font-size: small; font-weight: bold;">Realtime Schedule</div>
-                <div class="d-flex flex-row text-white mt-2 text-monospace" style="font-size: x-small;"><div class="timeUpdate active" id="automatic" onclick="setAutomatic()">Automatic</div><div class="timeUpdate ml-2" onclick="setManual()" id="manual">Manual</div></div>
+                <div class="d-flex flex-row text-white mt-2 text-monospace" style="font-size: small;"><div class="timeUpdate active" id="automatic" onclick="setAutomatic()">Automatic</div><div class="timeUpdate ml-2" onclick="setManual()" id="manual">Manual</div></div>
                 <input disabled style="font-size: small;" class="mt-1" id="datetime" type="datetime-local" step="1"></input>
+                <div>All times shown in your timezone.</div>
                 <script>
                     var autoUpdates = true;
 
