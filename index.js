@@ -20,6 +20,6 @@ app.get("/whova", (req, res, next) => {
     }).end();
 });
 
-app.get('/gather-town', (req, res, next) => {
+app.get('/', (req, res, next) => {
     res.sendFile('static/gather-town.html' , { root : __dirname});
 });
