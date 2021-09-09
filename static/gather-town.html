@@ -1,0 +1,140 @@
+<html>
+    <header>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </header>
+    <body style="margin: 0px;">
+        <div class="d-flex flex-row" style="width: 100%; height: 10vh; background: rgb(32, 37, 64); font-family: 'DM Sans', sans-serif;padding: 10px;">
+            <div class="d-flex flex-column justify-space-between">
+                <div style="color: white; font-size: small; font-weight: bold;">Realtime Schedule</div>
+                <input style="font-size: small;" class="mt-2" id="datetime" type="datetime-local"></input>
+                <div class="mt-1" style="color: white; font-size: x-small;"><i>Based on your timezone.</i></div>
+            </div>
+            <div class="text-monospace d-flex flex-row" style="font-size: small; margin-left: 20px;" id="text">
+                
+            </div>
+        </div>
+
+        <style>
+            .scrollingTitle span {
+                position: absolute;
+                white-space: nowrap;
+                transform: translateX(0);
+                transition: 1s;
+            }
+        </style>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+        <iframe style="border: 0px; width: 100%; height: 90vh;" src="https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021"></iframe>
+        <script>
+            function toUTCDate(wString) {
+                var years = parseInt(wString.substring(0,4));
+                var months = parseInt(wString.substring(5,7));
+                var days = parseInt(wString.substring(8,10));
+                var hours = parseInt(wString.substring(11,13));
+                var minutes = parseInt(wString.substring(14,16));
+                var seconds = parseInt(wString.substring(17,19));
+
+                var conferenceTimezoneOffset = 11;
+
+                
+                var date = new Date(Date.UTC(years, months - 1, days, hours + conferenceTimezoneOffset, minutes, seconds)); // js months is zero-based lol :(
+                return date;
+            }
+
+            function cleanSessionName(name) {
+                return name.replace("Track1", "").replace("Track2", "").replace("Track3", "").replace("Track4", "").replace(" Session1: ", "").replace(" Session2: ", "")
+            }
+
+            var data = {};
+            var xmlHttp = new XMLHttpRequest();
+            var presentations = [];
+            var sessions = [];
+            xmlHttp.onreadystatechange = function() { 
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                    data = JSON.parse(xmlHttp.responseText);
+                    data.data.agenda.forEach(agenda => {
+                        agenda.time_ranges.forEach(time_range => {
+                            time_range[1].forEach(range => {
+                                range.forEach(subrange => {
+                                    subrange.sessions.forEach(session => {
+                                        console.log(session)
+                                        sessions.push({
+                                            name: cleanSessionName(session.name),
+                                            start: toUTCDate(session.calendar_stime),
+                                            end: toUTCDate(session.calendar_etime),
+                                            presentations: [],
+                                            tracks: session.tracks
+                                        })
+
+                                        session.programs.forEach(presentationSet => {
+                                            if (presentationSet !== undefined && presentationSet.length !== 0) {
+                                                presentationSet.forEach(presentation => {
+                                                    var processedPresentation = {
+                                                        name: presentation.name,
+                                                        start: toUTCDate(presentation.calendar_stime),
+                                                        end: toUTCDate(presentation.calendar_etime),
+                                                        tracks: presentation.tracks,
+                                                        session_id: presentation.session_id,
+                                                        session_order: presentation.session_order
+                                                    }
+                                                    sessions[sessions.length - 1].presentations.push(processedPresentation);
+                                                });
+                                            }
+                                        });
+                                    })
+                                });
+                            });
+                        })
+                    });
+
+                }
+            }
+            xmlHttp.open("GET", "/whova", true); // true for asynchronous 
+            xmlHttp.send(null);
+
+
+            setInterval(() => {
+                var datetimeval = $("#datetime").val();
+                if (sessions === undefined) {
+                    return;
+                }
+
+                var currentTime = new Date(datetimeval);
+
+                $('#text').empty();
+
+                sessions.forEach(session => {
+                    //console.log(session.start.toString() + " : " + currentTime.toString() + (session.start > currentTime).toString())
+                    if (session.start < currentTime && session.end > currentTime) {
+                        var presentations = "<div class='w-100 d-flex flex-column'>";
+                        session.presentations.filter(x => x.end > currentTime).forEach((presentation, index) => {
+                            if (index === 0) {
+                                presentations += `<div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;"><div class="badge badge-danger mr-2">LIVE</div>${presentation.name}</div>`
+                            } else if (index < 3) {
+                                presentations += `<div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">${presentation.start.toLocaleTimeString().replace(":00", "")} ${presentation.name}</div>`
+                            }
+                            
+                        });
+                        presentations += "</div>"
+                        
+                        var tracks = `<div class="d-flex flex-row">`;
+                        session.tracks.forEach(track => {
+                            tracks += `<div class="badge" style="background-color: ${track.color}; color: white">${track.name}</div>`
+                        })
+                        tracks += "</div>"
+
+                        $('#text').append(`<div class="card ml-2 p-1" style="color: black; border-color: transparent; font-size: x-small; min-width: 250px; max-width: 250px;">
+                            <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;  font-weight: bold;" class="mb-2">${session.name}</div>
+                            `
+                            //+ tracks
+                            + presentations    
+                        + `</div>`)
+                    }
+                })
+            }, 1000);
+        </script>
+    </body>
+</html>
