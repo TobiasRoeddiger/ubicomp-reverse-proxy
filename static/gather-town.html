@@ -1,13 +1,40 @@
 <html>
     <header>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style>
+            .active {
+                color: aquamarine;
+                font-weight: bold;
+            }
+
+            .timeUpdate {
+                cursor: pointer;
+            }
+        </style>
     </header>
     <body style="margin: 0px;">
         <div class="d-flex flex-row" style="width: 100%; height: 10vh; background: rgb(32, 37, 64); font-family: 'DM Sans', sans-serif;padding: 10px;">
             <div class="d-flex flex-column justify-space-between">
                 <div style="color: white; font-size: small; font-weight: bold;">Realtime Schedule</div>
-                <input style="font-size: small;" class="mt-2" id="datetime" type="datetime-local"></input>
-                <div class="mt-1" style="color: white; font-size: x-small;"><i>Based on your timezone.</i></div>
+                <div class="d-flex flex-row text-white mt-2 text-monospace" style="font-size: x-small;"><div class="timeUpdate active" id="automatic" onclick="setAutomatic()">Automatic</div><div class="timeUpdate ml-2" onclick="setManual()" id="manual">Manual</div></div>
+                <input disabled style="font-size: small;" class="mt-1" id="datetime" type="datetime-local" step="1"></input>
+                <script>
+                    var autoUpdates = true;
+
+                    function setAutomatic() {
+                        $('#manual').removeClass("active");
+                        $('#automatic').addClass("active");
+                        autoUpdates = true;
+                        $('#datetime').attr("disabled","")
+                    }
+
+                    function setManual() {
+                        $('#automatic').removeClass("active");
+                        $('#manual').addClass("active");
+                        autoUpdates = false;
+                        $('#datetime').removeAttr("disabled")
+                    }
+                </script>
             </div>
             <div class="text-monospace d-flex flex-row" style="font-size: small; margin-left: 20px;" id="text">
                 
@@ -29,6 +56,24 @@
 
         <iframe style="border: 0px; width: 100%; height: 90vh;" src="https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021"></iframe>
         <script>
+            $(document).ready(() => {
+                var now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                document.getElementById('datetime').value = now.toISOString().slice(0,19);
+            });
+
+            setInterval(() => {
+                if (!autoUpdates) {
+                    return;
+                }
+
+                var now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                if (document.getElementById('datetime').value !== now.toISOString().slice(0,19)) {
+                    document.getElementById('datetime').value = now.toISOString().slice(0,19);
+                }
+            }, 1000)
+
             function toUTCDate(wString) {
                 var years = parseInt(wString.substring(0,4));
                 var months = parseInt(wString.substring(5,7));
