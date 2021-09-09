@@ -76,6 +76,14 @@
                 background-color: rgb(255, 162, 162);
             }
         }
+
+        .sessionCard {
+            background-color: white;
+        }
+
+        .sessionCard:hover {
+            background-color: lightgray;
+        }
     </style>
 </header>
 
@@ -84,7 +92,11 @@
         <div class="d-flex flex-row"
             style="width: 100%; background: rgb(29, 32, 51); font-family: 'DM Sans', sans-serif;padding: 10px;">
             <div class="d-flex flex-column justify-space-between flex: 0 1 auto">
-                <div style="color: white; font-size: small; font-weight: bold;">Live Schedule</div>
+                <div class="d-flex flex-row ">
+                    <div style="color: white; font-size: small; font-weight: bold;">Live Schedule</div>
+                    <div></div>
+                </div>
+                
                 <div class="d-flex flex-row text-white mt-1 text-monospace" style="font-size: small;">
                     <div class="timeUpdate active" id="automatic" onclick="setAutomatic()">Automatic</div>
                     <div class="timeUpdate ml-2" onclick="setManual()" id="manual">Manual</div>
@@ -111,7 +123,7 @@
                     }
                 </script>
             </div>
-            <div class="text-monospace justify-content-center"
+            <div class="justify-content-center"
                 style="font-size: small; margin-left: 20px; display: flex; flex-flow: row; flex: 1; overflow-x: auto;"
                 id="text">
                 <div class="lds-ring align-self-center"><div></div><div></div><div></div><div></div></div>
@@ -280,9 +292,9 @@
                         session.presentations.filter(x => x.end > currentTime).forEach((presentation, index) => {
                             presentationsCounter++;
                             if (index === 0) {
-                                presentations += `<div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;"><div class="mr-1 live"></div>${presentation.name}</div>`
+                                presentations += `<div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" class="pr-2 pl-2"><div class="mr-1 live"></div><b>${presentation.name}</b></div>`
                             } else if (index < 3) {
-                                presentations += `<div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">${presentation.start.toLocaleTimeString().replace(":00", "")} ${presentation.name}</div>`
+                                presentations += `<div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" class="pr-2 pl-2">${presentation.start.toLocaleTimeString().replace(":00", "")} ${presentation.name}</div>`
                             }
                         });
                         presentations += "</div>"
@@ -295,8 +307,8 @@
                         })
                         tracks += "</div>"
 
-                        $('#text').append(`<div class="card ml-2 mb-1 p-1 justify-content-between" style="color: black; border-color: transparent; font-size: x-small; flex-grow: 1; flex-basis: 0; min-width: 190px; max-width: 400px;">
-                            <div class="d-flex flex-row justify-content-between align-items-center mb-1">
+                        $('#text').append(`<div onclick="teleport('${session.tracks[0].name}')" class="sessionCard card ml-2 mb-1 justify-content-between" style="oveflow: hidden; cursor: pointer; color: black; border-color: transparent; font-size: x-small; flex-grow: 1; flex-basis: 0; min-width: 190px; max-width: 400px; border: solid 0px rgba(0,0,0,0.0);">
+                            <div class="pr-2 pt-2 pl-2 d-flex flex-row justify-content-between align-items-center mb-1">
                                 <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: bold;">
                                     ${session.name}
                                 </div>`
@@ -304,8 +316,9 @@
                             `</div>`
                             + presentations
                             + `<div>
-                                <div class="badge align-self-end mt-1" style="background: black; cursor: pointer; color: white; font-size: 1em" onclick="teleport('${session.tracks[0].name}')">Teleport Now</div>    
-                            </div>`
+                            </div>
+                            <div class="mt-1 align-self-center text-center w-100" style="background-color: lightgray; border-radius: 0px 0px 0.25rem 0.25rem"><i>click on card to teleport</i></div>    
+                            `
                             + `</div>`)
                     }
                 });
@@ -314,7 +327,7 @@
 
                     $('#text').append("<div style='align-self: center;'><i style='color: #aaaaaa'>Currently no sessions are running.</i></div>")
                 }
-            }, 1000);
+            }, 20000);
         </script>
     </div>
 </body>
