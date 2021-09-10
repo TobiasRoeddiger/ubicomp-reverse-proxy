@@ -269,6 +269,7 @@
 
             function teleport(location) {
                 location = location.toLowerCase().replace(/\s/g, "");
+                console.log("teleporting to: " + location)
                 switch (location) {
                     case "track1":
                         teleportToUrl("https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=NgBK2L5rRi0HqpFH")
@@ -286,6 +287,27 @@
                         alert("Sorry :( No spawn tile specified for this session.")
                         break;
                     case "opening":
+                        alert("Sorry :( No spawn tile specified for this session.")
+                        break;
+                    case "panel":
+                        alert("Sorry :( No spawn tile specified for this session.")
+                        break;
+                    case "poster": // ISWC
+                        alert("Sorry :( No spawn tile specified for this session.")
+                        break;
+                    case "demo": // ISWC
+                        alert("Sorry :( No spawn tile specified for this session.")
+                        break;
+                    case "posters": // Ubicomp
+                        alert("Sorry :( No spawn tile specified for this session.")
+                        break;
+                    case "demos": // Ubicomp
+                        alert("Sorry :( No spawn tile specified for this session.")
+                        break;
+                    case "social": // currently only the town hall
+                        alert("Sorry :( No spawn tile specified for this session.")
+                        break;
+                    case "awards": // currently only the town hall
                         alert("Sorry :( No spawn tile specified for this session.")
                         break;
                     default:
@@ -326,7 +348,9 @@
 
                         var tracks = `<div class="d-flex flex-row">`;
                         session.tracks.forEach(track => {
-                            tracks += `<div class="badge" style="background-color: ${track.color}; color: white">${track.name}</div>`
+                            if (track.name === "Gather.Town") return;
+
+                            tracks += `<div class="badge ml-1" style="background-color: ${track.color}; color: white">${track.name}</div>`
                         })
                         tracks += "</div>"
 
