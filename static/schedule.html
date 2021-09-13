@@ -190,9 +190,8 @@
                                                         session_id: presentation.session_id,
                                                         session_order: presentation.session_order,
                                                         authors: (presentation.desc === undefined || presentation.desc.split('<br><br>Authors:')[1] === undefined) ? "" : presentation.desc.split('<br><br>Authors:')[1].split('<br>DOI link:')[0],
-                                                        abstract: (presentation.desc === undefined) ? "" : presentation.desc.split('<br> <br> Abstract: <br>  <br>')[1]
+                                                        abstract: (presentation.desc === undefined) ? "" : presentation.desc.split('<br> <br> Abstract: <br> <br>')[1]
                                                     }
-                                                    console.log(presentation.desc)
                                                     sessions[sessions.length - 1].presentations.push(processedPresentation);
                                                     currentPaperId++;
                                                 });
