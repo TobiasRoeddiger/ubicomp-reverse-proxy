@@ -266,53 +266,27 @@
                 $('#gatherSpace').attr('src', url)
             }
 
-
+            var sessionMapping = {
+                track1:  "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=NgBK2L5rRi0HqpFH",
+                track2:  "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=KEGa0TOPHb63w3Fa",
+                track3:  "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=uzo9ndIpelYyqf1B",
+                track4:  "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=ikhhH9hUfx2x4CqZ",
+                keynote: "",
+                opening: "",
+                panel:   "",
+                poster:  "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=g-_xe9qGeBHXnHnR",
+                demo:    "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=g-_xe9qGeBHXnHnR",
+                posters: "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=f-zbRuiPfclZxagc",
+                demos:   "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=f-zbRuiPfclZxagc",
+                social:  "",
+                awards:  "",
+            };
             function teleport(location) {
                 location = location.toLowerCase().replace(/\s/g, "");
-                console.log("teleporting to: " + location)
-                switch (location) {
-                    case "track1":
-                        teleportToUrl("https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=NgBK2L5rRi0HqpFH")
-                        break;
-                    case "track2":
-                        teleportToUrl("https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=KEGa0TOPHb63w3Fa")
-                        break;
-                    case "track3":
-                        teleportToUrl("https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=uzo9ndIpelYyqf1B")
-                        break;
-                    case "track4":
-                        teleportToUrl("https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=ikhhH9hUfx2x4CqZ")
-                        break;
-                    case "keynote":
-                        alert("Sorry :( No spawn tile specified for this session.")
-                        break;
-                    case "opening":
-                        alert("Sorry :( No spawn tile specified for this session.")
-                        break;
-                    case "panel":
-                        alert("Sorry :( No spawn tile specified for this session.")
-                        break;
-                    case "poster": // ISWC
-                        alert("Sorry :( No spawn tile specified for this session.")
-                        break;
-                    case "demo": // ISWC
-                        alert("Sorry :( No spawn tile specified for this session.")
-                        break;
-                    case "posters": // Ubicomp
-                        alert("Sorry :( No spawn tile specified for this session.")
-                        break;
-                    case "demos": // Ubicomp
-                        alert("Sorry :( No spawn tile specified for this session.")
-                        break;
-                    case "social": // currently only the town hall
-                        alert("Sorry :( No spawn tile specified for this session.")
-                        break;
-                    case "awards": // currently only the town hall
-                        alert("Sorry :( No spawn tile specified for this session.")
-                        break;
-                    default:
-                        alert("Sorry :( No spawn tile specified for this session.")
-                        break;
+                if (Object.key(sessionMapping).includes(location) && sessionMapping[location] !== "") {
+                    teleportToUrl(sessionMapping[location])
+                } else {
+                    alert("Sorry :( teleport location not defined for this session")
                 }
             }
 

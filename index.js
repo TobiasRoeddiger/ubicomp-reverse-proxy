@@ -23,3 +23,7 @@ app.get("/whova", (req, res, next) => {
 app.get('/', (req, res, next) => {
     res.sendFile('static/gather-town.html' , { root : __dirname});
 });
+
+app.get("/schedule", (req, res, next) => {
+    res.sendFile('static/schedule.html' , { root : __dirname});
+});
