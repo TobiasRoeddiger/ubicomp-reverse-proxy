@@ -213,7 +213,7 @@
 
                         
                         if (prevDate !== session.start.toLocaleDateString('en-US').slice(0,10)) {
-                            $('#text').append("<div style='position: sticky; position: webkit-sticky'><h3 style='font-weight: bold' class='mt-3'>" + session.start.toLocaleDateString('en-US', { weekday: 'long' }) + ", " + session.start.toLocaleDateString('en-US').slice(0,10) + "</h3></div>")
+                            $('#text').append("<div style='position: sticky; position: webkit-sticky'><h3 style='font-weight: bold' class='mt-3'>" + session.start.toLocaleDateString('en-US', { weekday: 'long' }) + ", " + session.start.toLocaleDateString('en-US').slice(0,10) + "</h3> <div style='font-size: small' class='mb-2'><i>Time and date are based on your timezone settings (" + new window.Intl.DateTimeFormat().resolvedOptions().timeZone + ").</i></div></div>")
                             prevDate = session.start.toLocaleDateString('en-US').slice(0,10)
                         }
 
