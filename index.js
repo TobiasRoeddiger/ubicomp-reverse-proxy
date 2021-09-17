@@ -27,3 +27,7 @@ app.get('/', (req, res, next) => {
 app.get("/schedule", (req, res, next) => {
     res.sendFile('static/schedule.html' , { root : __dirname});
 });
+
+app.get("/debug", (req, res, next) => {
+    res.sendFile('static/control.html' , { root : __dirname});
+});

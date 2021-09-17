@@ -1,0 +1,430 @@
+<html>
+<header>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .active {
+            color: rgb(6, 214, 160);
+            font-weight: bold;
+        }
+
+        .timeUpdate {
+            cursor: pointer;
+        }
+
+        .lds-ring {
+            display: inline-block;
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+
+        .lds-ring div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            margin: 6px;
+            border: 6px solid rgb(169, 177, 221);
+            border-radius: 50%;
+            animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: rgb(169, 177, 221) transparent transparent transparent;
+        }
+
+        .lds-ring div:nth-child(1) {
+            animation-delay: -0.45s;
+        }
+
+        .lds-ring div:nth-child(2) {
+            animation-delay: -0.3s;
+        }
+
+        .lds-ring div:nth-child(3) {
+            animation-delay: -0.15s;
+        }
+
+        @keyframes lds-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .live {
+            height: 8px;
+            width: 8px;
+            background-color: red;
+            border-radius: 50%;
+            display: inline-block;
+            animation: live 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+
+        @keyframes live {
+            0% {
+                background-color: rgb(255, 162, 162);
+            }
+
+            50% {
+                background-color: red;
+            }
+
+            100% {
+                background-color: rgb(255, 162, 162);
+            }
+        }
+
+        .sessionCard {
+            background-color: white;
+        }
+
+        .sessionCard:hover {
+            background-color: lightgray;
+        }
+
+        .problem {
+            background-color: transparent;
+            border: solid 0px transparent;
+        }
+
+        .problem:hover {
+            color: white !important;
+            cursor: pointer;
+        }
+
+        .problem:focus {
+            border: solid 0px transparent;
+            outline: transparent;
+        }
+    </style>
+</header>
+
+<body class="" style="margin: 0px;">
+    <div style="display: flex; flex-flow: column; height: 100%">
+        <div class="d-flex flex-row"
+            style="width: 100%; background: rgb(29, 32, 51); font-family: 'DM Sans', sans-serif;padding: 10px;">
+            <div class="d-flex flex-column justify-space-between flex: 0 1 auto">
+                <div class="d-flex flex-row justify-content-between align-items-start">
+                    <div style="color: white; font-size: small; font-weight: bold;">Live Schedule</div>
+                    <button type="button" class="problem" style="color: lightgray; font-size: x-small; text-decoration: underline;" data-toggle="modal" data-target="#reportProblemModal">
+                        <b>FAQ</b></button>
+                </div>
+
+                <div class="d-flex flex-row text-white text-monospace mt-2" style="font-size: small;">
+                    <div class="timeUpdate active" id="automatic" onclick="setAutomatic()">Automatic</div>
+                    <div class="timeUpdate ml-2" onclick="setManual()" id="manual">Manual</div>
+                </div>
+                <input disabled style="font-size: small;" class="mt-1" id="datetime" type="datetime-local"
+                    step="1"></input>
+                <div class="mt-1" style="font-size: x-small; color: white;">All times shown in your local timezone.
+                </div>
+                <script>
+                    var autoUpdates = true;
+
+                    function setAutomatic() {
+                        $('#manual').removeClass("active");
+                        $('#automatic').addClass("active");
+                        autoUpdates = true;
+                        $('#datetime').attr("disabled", "")
+                    }
+
+                    function setManual() {
+                        $('#automatic').removeClass("active");
+                        $('#manual').addClass("active");
+                        autoUpdates = false;
+                        $('#datetime').removeAttr("disabled")
+                    }
+                </script>
+            </div>
+            <div class="justify-content-center"
+                style="font-size: small; margin-left: 20px; display: flex; flex-flow: row; flex: 1; overflow-x: auto;"
+                id="text">
+                <div class="lds-ring align-self-center">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .scrollingTitle span {
+                position: absolute;
+                white-space: nowrap;
+                transform: translateX(0);
+                transition: 1s;
+            }
+        </style>
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+        <div style="flex: 1 1 auto;" class="d-flex flex-row">
+            <iframe id="gatherSpace" style="border: 0px; width: 80%; height: 100%;"
+            allow="microphone;camera;midi;encrypted-media;clipboard-read;clipboard-write"
+            src="https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021"></iframe>
+            <div style="width: 20%; height: 100%" class="d-flex flex-column">
+                <iframe style="width: 100%; flex: 1 1 auto;" src="https://player.twitch.tv?autoplay=true&channel=ubicomp1&controls=true&height=100%25&muted=false&parent=gather.town&parent=gatherwrapper.azurewebsites.net&parent=debug.ubicomp.org&playsinline=true&video=&width=100%25">
+
+                </iframe>
+                <iframe style="width: 100%; flex: 1 1 auto;" src="https://player.twitch.tv?autoplay=true&channel=ubicomp2&controls=true&height=100%25&muted=false&parent=gather.town&parent=gatherwrapper.azurewebsites.net&parent=debug.ubicomp.org&playsinline=true&video=&width=100%25">
+
+                </iframe>
+                <iframe style="width: 100%; flex: 1 1 auto;" src="https://player.twitch.tv?autoplay=true&channel=ubicomp3&controls=true&height=100%25&muted=false&parent=gather.town&parent=gatherwrapper.azurewebsites.net&parent=debug.ubicomp.org&playsinline=true&video=&width=100%25">
+
+                </iframe>
+                <iframe style="width: 100%; flex: 1 1 auto;" src="https://player.twitch.tv?autoplay=true&channel=ubicomp4&controls=true&height=100%25&muted=false&parent=gather.town&parent=gatherwrapper.azurewebsites.net&parent=debug.ubicomp.org&playsinline=true&video=&width=100%25">
+
+                </iframe>
+                <iframe style="width: 100%; flex: 1 1 auto;" src="https://player.twitch.tv?autoplay=true&channel=ubicomp5&controls=true&height=100%25&muted=false&parent=gather.town&parent=gatherwrapper.azurewebsites.net&parent=debug.ubicomp.org&playsinline=true&video=&width=100%25">
+
+                </iframe>
+            </div>
+        </div>
+        
+        
+        <script>
+
+            $(document).ready(() => {
+                navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+
+                var now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                document.getElementById('datetime').value = now.toISOString().slice(0, 19);
+            });
+
+            setInterval(() => {
+                if (!autoUpdates) {
+                    return;
+                }
+
+                var now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                if (document.getElementById('datetime').value !== now.toISOString().slice(0, 19)) {
+                    document.getElementById('datetime').value = now.toISOString().slice(0, 19);
+                }
+            }, 1000)
+
+            function toUTCDate(wString) {
+                var years = parseInt(wString.substring(0, 4));
+                var months = parseInt(wString.substring(5, 7));
+                var days = parseInt(wString.substring(8, 10));
+                var hours = parseInt(wString.substring(11, 13));
+                var minutes = parseInt(wString.substring(14, 16));
+                var seconds = parseInt(wString.substring(17, 19));
+
+                var conferenceTimezoneOffset = 11;
+
+
+                var date = new Date(Date.UTC(years, months - 1, days, hours + conferenceTimezoneOffset, minutes, seconds)); // js months is zero-based lol :(
+                return date;
+            }
+
+            function cleanSessionName(name) {
+                return name.replace("Track1", "").replace("Track2", "").replace("Track3", "").replace("Track4", "").replace(" Session1: ", "").replace(" Session2: ", "")
+            }
+
+            var data = {};
+            var xmlHttp = new XMLHttpRequest();
+            var presentations = [];
+            var sessions = [];
+            var sessionsLoaded = false;
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                    data = JSON.parse(xmlHttp.responseText);
+                    data.data.agenda.forEach(agenda => {
+                        agenda.time_ranges.forEach(time_range => {
+                            time_range[1].forEach(range => {
+                                range.forEach(subrange => {
+                                    subrange.sessions.forEach(session => {
+                                        sessions.push({
+                                            name: cleanSessionName(session.name),
+                                            start: toUTCDate(session.calendar_stime),
+                                            end: toUTCDate(session.calendar_etime),
+                                            presentations: [],
+                                            tracks: session.tracks
+                                        })
+
+                                        session.programs.forEach(presentationSet => {
+                                            if (presentationSet !== undefined && presentationSet.length !== 0) {
+                                                presentationSet.forEach(presentation => {
+                                                    var processedPresentation = {
+                                                        name: presentation.name,
+                                                        start: toUTCDate(presentation.calendar_stime),
+                                                        end: toUTCDate(presentation.calendar_etime),
+                                                        tracks: presentation.tracks,
+                                                        session_id: presentation.session_id,
+                                                        session_order: presentation.session_order
+                                                    }
+                                                    sessions[sessions.length - 1].presentations.push(processedPresentation);
+                                                });
+                                            }
+                                        });
+                                    })
+                                });
+                            });
+                        });
+                    });
+                    $('.lds-ring').remove();
+                    sessionsLoaded = true;
+                }
+            }
+            xmlHttp.open("GET", "/whova", true); // true for asynchronous 
+            xmlHttp.send(null);
+
+            function teleportToUrl(url) {
+                $('#gatherSpace').attr('src', url)
+            }
+
+            var sessionMapping = {
+                track1:  "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=NgBK2L5rRi0HqpFH",
+                track2:  "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=KEGa0TOPHb63w3Fa",
+                track3:  "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=uzo9ndIpelYyqf1B",
+                track4:  "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=ikhhH9hUfx2x4CqZ",
+                keynote: "",
+                opening: "",
+                panel:   "",
+                poster:  "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=g-_xe9qGeBHXnHnR",
+                demo:    "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=g-_xe9qGeBHXnHnR",
+                posters: "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=f-zbRuiPfclZxagc",
+                demos:   "https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021?spawnToken=f-zbRuiPfclZxagc",
+                social:  "",
+                awards:  "",
+            };
+
+            function teleport(location) {
+                location = location.toLowerCase().replace(/\s/g, "");
+                if (Object.key(sessionMapping).includes(location) && sessionMapping[location] !== "") {
+                    teleportToUrl(sessionMapping[location])
+                } else {
+                    alert("Sorry :( teleport location not defined for this session")
+                }
+            }
+
+
+            setInterval(() => {
+                var datetimeval = $("#datetime").val();
+                if (!sessionsLoaded) {
+                    return;
+                }
+
+                var currentTime = new Date(datetimeval);
+
+                $('#text').empty();
+
+                var validSessionCounter = 0;
+                sessions.forEach(session => {
+                    if (session.start < currentTime && session.end > currentTime) {
+                        validSessionCounter++;
+                        var presentations = "<div class='w-100 d-flex flex-column'>";
+
+                        var presentationsCounter = 0;
+                        session.presentations.filter(x => x.end > currentTime).forEach((presentation, index) => {
+                            presentationsCounter++;
+                            if (index === 0) {
+                                presentations += `<div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" class="pr-2 pl-2"><div class="mr-1 live"></div><b>${presentation.name}</b></div>`
+                            } else if (index < 3) {
+                                presentations += `<div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" class="pr-2 pl-2">${presentation.start.toLocaleTimeString().replace(":00", "")} ${presentation.name}</div>`
+                            }
+                        });
+                        presentations += "</div>"
+
+                        if (presentationsCounter === 0 && session.tracks[0].name.includes("Track")) presentations = "<div style='color: gray' class='pr-2 pl-2'><i>All presentations of this session are finished.</i></div>"
+
+                        var tracks = `<div class="d-flex flex-row">`;
+                        session.tracks.forEach(track => {
+                            if (track.name === "Gather.Town") return;
+
+                            tracks += `<div class="badge ml-1" style="background-color: ${track.color}; color: white">${track.name}</div>`
+                        })
+                        tracks += "</div>"
+
+                        $('#text').append(`<div onclick="teleport('${session.tracks[0].name}')" class="sessionCard card ml-2 mb-1 justify-content-between" style="oveflow: hidden; cursor: pointer; color: black; border-color: transparent; font-size: x-small; flex-grow: 1; flex-basis: 0; min-width: 190px; max-width: 400px; border: solid 0px rgba(0,0,0,0.0);">
+                            <div class="pr-2 pl-2 pt-1 d-flex flex-row justify-content-between align-items-center mb-1">
+                                <div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: bold;">
+                                    ${session.name}
+                                </div>`
+                            + tracks +
+                            `</div>`
+                            + presentations
+                            + `<div>
+                            </div>
+                            <div class="mt-1 align-self-center text-center w-100" style="background-color: lightgray; border-radius: 0px 0px 0.25rem 0.25rem"><i>click on card to teleport</i></div>    
+                            `
+                            + `</div>`)
+                    }
+                });
+
+                if (validSessionCounter === 0) {
+
+                    $('#text').append("<div style='align-self: center;' class=''><i style='color: #aaaaaa'>Currently no sessions are running.</i></div>")
+                }
+            }, 1000);
+        </script>
+
+        <div id="reportProblemModal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">FAQ</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="accordion">
+                            <div class="card">
+                              <div class="card-header" id="headingOne">
+                                <h5 class="mb-0">
+                                  <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Gather town is not loading. I can only see a white screen.
+                                  </button>
+                                </h5>
+                              </div>
+                          
+                              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                <div class="card-body">
+                                  This issue occurs when browsing the website in "Incognito Mode" using Chrome. Please visit the page in a regular browser window or go to the <a target="_blank" rel="noopener noreferrer" href="https://gather.town/app/uBEfiDuhTpOg53yY/UbiComp2021">Ubicomp gather.town space</a> without live schedule.
+                                </div>
+                              </div>
+                            </div>
+                            <div class="card mt-2">
+                              <div class="card-header" id="headingTwo">
+                                <h5 class="mb-0">
+                                  <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    My problem is not listed above.
+                                  </button>
+                                </h5>
+                              </div>
+                              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                <div class="card-body">
+                                  For general questions regarding the conference please contact <a href="mailto:general-chairs-2021@ubicomp.org">general-chairs-2021@ubicomp.org</a>.<br/><br/>
+
+                                  For questions or issues regarding the live schedule please contact <a href="mailto:tech-2021@ubicomp.org">tech-2021@ubicomp.org</a>.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
