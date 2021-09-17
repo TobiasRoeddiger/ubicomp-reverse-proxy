@@ -305,7 +305,7 @@
 
             function teleport(location) {
                 location = location.toLowerCase().replace(/\s/g, "");
-                if (Object.key(sessionMapping).includes(location) && sessionMapping[location] !== "") {
+                if (Object.keys(sessionMapping).includes(location) && sessionMapping[location] !== "") {
                     teleportToUrl(sessionMapping[location])
                 } else {
                     alert("Sorry :( teleport location not defined for this session")
